@@ -39,7 +39,8 @@ module "storage" {
 }
 
 module "ds" {
-  source = "../../"
+  source  = "cloudnationhq/ds/azure"
+  version = "~> 1.0"
 
   location            = module.rg.groups.demo.location
   resource_group_name = module.rg.groups.demo.name
