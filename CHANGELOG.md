@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.1](https://github.com/CloudNationHQ/terraform-azure-ds/compare/v1.0.0...v1.0.1) (2026-07-10)
+
+
+### Bug Fixes
+
+* add template files ([5a113f5](https://github.com/CloudNationHQ/terraform-azure-ds/commit/5a113f577c9ac70c4caf5728486ed33e0370c5e2))
+* add template files ([000bb56](https://github.com/CloudNationHQ/terraform-azure-ds/commit/000bb567ab1c449b96287e14fd5ad4f43233d417))
+
 ## 1.0.0 (2026-06-17)
 
 
