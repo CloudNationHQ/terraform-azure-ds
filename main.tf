@@ -1,12 +1,20 @@
 # data share account
 resource "azurerm_data_share_account" "this" {
-  name                = var.account.name
-  location            = coalesce(var.account.location, var.location)
-  resource_group_name = coalesce(var.account.resource_group_name, var.resource_group_name)
-  tags                = coalesce(var.account.tags, var.tags)
+  name = var.account.name
+  location = coalesce(
+    var.account.location, var.location
+  )
+
+  resource_group_name = coalesce(
+    var.account.resource_group_name, var.resource_group_name
+  )
+
+  tags = coalesce(
+    var.account.tags, var.tags
+  )
 
   identity {
-    type = "SystemAssigned"
+    type = var.account.identity.type
   }
 }
 
@@ -14,22 +22,30 @@ resource "azurerm_data_share_account" "this" {
 resource "azurerm_role_assignment" "this" {
   for_each = var.account.role_assignments
 
-  scope                            = each.value.scope
-  role_definition_name             = each.value.role_definition_name
-  role_definition_id               = each.value.role_definition_id
-  principal_id                     = coalesce(each.value.principal_id, azurerm_data_share_account.this.identity[0].principal_id)
-  principal_type                   = each.value.principal_type
-  condition                        = each.value.condition
-  condition_version                = each.value.condition_version
-  skip_service_principal_aad_check = each.value.skip_service_principal_aad_check
-  description                      = each.value.description
+  name                                   = each.value.name
+  scope                                  = each.value.scope
+  role_definition_name                   = each.value.role_definition_name
+  role_definition_id                     = each.value.role_definition_id
+  principal_type                         = each.value.principal_type
+  condition                              = each.value.condition
+  condition_version                      = each.value.condition_version
+  skip_service_principal_aad_check       = each.value.skip_service_principal_aad_check
+  delegated_managed_identity_resource_id = each.value.delegated_managed_identity_resource_id
+  description                            = each.value.description
+
+  principal_id = coalesce(
+    each.value.principal_id, azurerm_data_share_account.this.identity[0].principal_id
+  )
 }
 
 # shares
 resource "azurerm_data_share" "this" {
   for_each = var.account.shares
 
-  name        = coalesce(each.value.name, each.key)
+  name = coalesce(
+    each.value.name, each.key
+  )
+
   account_id  = azurerm_data_share_account.this.id
   kind        = each.value.kind
   description = each.value.description
@@ -39,7 +55,10 @@ resource "azurerm_data_share" "this" {
     for_each = each.value.snapshot_schedule != null ? { "this" = each.value.snapshot_schedule } : {}
 
     content {
-      name       = coalesce(snapshot_schedule.value.name, "${each.key}-schedule")
+      name = coalesce(
+        snapshot_schedule.value.name, each.key
+      )
+
       recurrence = snapshot_schedule.value.recurrence
       start_time = snapshot_schedule.value.start_time
     }
@@ -55,7 +74,10 @@ resource "azurerm_data_share_dataset_blob_storage" "this" {
     }
   ]...)
 
-  name           = coalesce(each.value.name, element(split(".", each.key), 1))
+  name = coalesce(
+    each.value.name, element(split(".", each.key), 1)
+  )
+
   data_share_id  = azurerm_data_share.this[each.value.share_key].id
   container_name = each.value.container_name
   file_path      = each.value.file_path
@@ -81,7 +103,10 @@ resource "azurerm_data_share_dataset_data_lake_gen2" "this" {
     }
   ]...)
 
-  name               = coalesce(each.value.name, element(split(".", each.key), 1))
+  name = coalesce(
+    each.value.name, element(split(".", each.key), 1)
+  )
+
   share_id           = azurerm_data_share.this[each.value.share_key].id
   storage_account_id = each.value.storage_account_id
   file_system_name   = each.value.file_system_name
@@ -102,7 +127,10 @@ resource "azurerm_data_share_dataset_kusto_cluster" "this" {
     }
   ]...)
 
-  name             = coalesce(each.value.name, element(split(".", each.key), 1))
+  name = coalesce(
+    each.value.name, element(split(".", each.key), 1)
+  )
+
   share_id         = azurerm_data_share.this[each.value.share_key].id
   kusto_cluster_id = each.value.kusto_cluster_id
 
@@ -120,7 +148,10 @@ resource "azurerm_data_share_dataset_kusto_database" "this" {
     }
   ]...)
 
-  name              = coalesce(each.value.name, element(split(".", each.key), 1))
+  name = coalesce(
+    each.value.name, element(split(".", each.key), 1)
+  )
+
   share_id          = azurerm_data_share.this[each.value.share_key].id
   kusto_database_id = each.value.kusto_database_id
 

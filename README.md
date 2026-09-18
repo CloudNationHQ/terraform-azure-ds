@@ -19,13 +19,13 @@ The following requirements are needed by this module:
 
 - <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (~> 1.0)
 
-- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 4.0)
+- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 5.0)
 
 ## Providers
 
 The following providers are used by this module:
 
-- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (~> 4.0)
+- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (~> 5.0)
 
 ## Resources
 
@@ -55,16 +55,21 @@ object({
     location            = optional(string)
     resource_group_name = optional(string)
     tags                = optional(map(string))
+    identity = optional(object({
+      type = string
+    }), { type = "SystemAssigned" })
     role_assignments = optional(map(object({
-      scope                            = string
-      role_definition_name             = optional(string)
-      role_definition_id               = optional(string)
-      principal_id                     = optional(string)
-      principal_type                   = optional(string)
-      condition                        = optional(string)
-      condition_version                = optional(string)
-      skip_service_principal_aad_check = optional(bool)
-      description                      = optional(string)
+      name                                   = optional(string)
+      scope                                  = string
+      role_definition_name                   = optional(string)
+      role_definition_id                     = optional(string)
+      principal_id                           = optional(string)
+      principal_type                         = optional(string)
+      condition                              = optional(string)
+      condition_version                      = optional(string)
+      skip_service_principal_aad_check       = optional(bool)
+      delegated_managed_identity_resource_id = optional(string)
+      description                            = optional(string)
     })), {})
     shares = optional(map(object({
       name        = optional(string)
@@ -191,11 +196,7 @@ The data share account uses a system assigned managed identity that needs read a
 
 We welcome contributions from the community! Whether it's reporting a bug, suggesting a new feature, or submitting a pull request, your input is highly valued.
 
-For more information, please see our contribution [guidelines](./CONTRIBUTING.md). <br><br>
-
-<a href="https://github.com/cloudnationhq/terraform-azure-ds/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=cloudnationhq/terraform-azure-ds" />
-</a>
+For more information, please see our contribution [guidelines](./CONTRIBUTING.md).
 
 ## License
 
@@ -205,4 +206,3 @@ MIT Licensed. See [LICENSE](./LICENSE) for full details.
 
 - [Documentation](https://learn.microsoft.com/en-us/azure/data-share/)
 - [Rest Api](https://learn.microsoft.com/en-us/rest/api/datashare/)
-- [Rest Api Specs](https://github.com/Azure/azure-rest-api-specs/tree/main/specification/datashare)

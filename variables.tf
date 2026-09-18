@@ -5,16 +5,21 @@ variable "account" {
     location            = optional(string)
     resource_group_name = optional(string)
     tags                = optional(map(string))
+    identity = optional(object({
+      type = string
+    }), { type = "SystemAssigned" })
     role_assignments = optional(map(object({
-      scope                            = string
-      role_definition_name             = optional(string)
-      role_definition_id               = optional(string)
-      principal_id                     = optional(string)
-      principal_type                   = optional(string)
-      condition                        = optional(string)
-      condition_version                = optional(string)
-      skip_service_principal_aad_check = optional(bool)
-      description                      = optional(string)
+      name                                   = optional(string)
+      scope                                  = string
+      role_definition_name                   = optional(string)
+      role_definition_id                     = optional(string)
+      principal_id                           = optional(string)
+      principal_type                         = optional(string)
+      condition                              = optional(string)
+      condition_version                      = optional(string)
+      skip_service_principal_aad_check       = optional(bool)
+      delegated_managed_identity_resource_id = optional(string)
+      description                            = optional(string)
     })), {})
     shares = optional(map(object({
       name        = optional(string)
@@ -58,12 +63,12 @@ variable "account" {
   })
 
   validation {
-    condition     = lookup(var.account, "location", null) != null || var.location != null
+    condition     = var.account.location != null || var.location != null
     error_message = "location must be set on var.account.location or on the module-level var.location."
   }
 
   validation {
-    condition     = lookup(var.account, "resource_group_name", null) != null || var.resource_group_name != null
+    condition     = var.account.resource_group_name != null || var.resource_group_name != null
     error_message = "resource_group_name must be set on var.account.resource_group_name or on the module-level var.resource_group_name."
   }
 }
