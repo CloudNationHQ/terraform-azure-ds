@@ -188,7 +188,7 @@ Using a dedicated module, we've developed a naming convention for resources that
 
 Full examples detailing all usages, along with integrations with dependency modules, are located in the examples directory.
 
-To update the module's documentation run `make doc`
+To update the module's documentation run `make docs`
 
 The data share account uses a system assigned managed identity that needs read access on each source resource referenced by a dataset (for example Storage Blob Data Reader on a source storage account, or Contributor on a kusto cluster). The module exposes a `role_assignments` interface on the account object so these role assignments can be created in the same apply, scoped to the relevant source resource, with the data share account's identity as the principal. All dataset resources implicitly depend on these role assignments to avoid permission errors during dataset creation.
 
